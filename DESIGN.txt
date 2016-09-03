@@ -1,0 +1,14 @@
+For my game, I decided to create a 2D scroller.
+It will be called "Mafia Mayhem". It will feature a lone vigilante who has taken it upon himself to take down the
+mafia. He will take to the city's streets where he will take down thugs and enforcers while working his way up to the
+don.
+The ultimate goal of the game is to take down the don in the boss level. To advance to the boss level, you will have 
+maneuver the dangerous New York City streets filled with obstacles like trash cans, fire escapes, and stray dogs while 
+dodging gunfire from the thugs and enforcers who you will have to shoot back at or find a way around. There will be 
+some sort of life system, probably something like 3 hits and you are dead, but I will decide on the exact total 
+depending on the difficulty I have while testing it. You will be able to pick up helpful powerups including 
+bulletproof vests and more powerful guns at weapons caches the vigilante keeps around the city. You will do this until 
+you reach the checkpoint which will allow you to advance to the next level. On the boss level, when you are facing the 
+don, the only way to reach the checkpoint is to take him down, but he will be much tougher than his minions.
+You will use the arrows to move your character. It will be the standard ones as well, like right arrow for forward, 
+left for back, and up for jump. Then, you can use the spacebar to shoot.
