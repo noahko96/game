@@ -26,22 +26,21 @@ public class Main extends Application {
      */
     @Override
     public void start (Stage s) {
-        // create your own game here
         myGame = new Game();
         s.setTitle(myGame.getTitle());
-        //add main menu here
+        new MainMenu(s, SIZE);
         // attach game to the stage and display it
-        Scene scene = myGame.init(SIZE, SIZE);
-        s.setScene(scene);
-        s.show();
+ //       scene = myGame.init(SIZE, SIZE);
+ //       s.setScene(scene);
+ //       s.show();
 
         // sets the game's loop
-        KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY),
-                                      e -> myGame.step(SECOND_DELAY));
-        Timeline animation = new Timeline();
-        animation.setCycleCount(Timeline.INDEFINITE);
-        animation.getKeyFrames().add(frame);
-        animation.play();
+//        KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY),
+//                                      e -> myGame.step(SECOND_DELAY));
+//        Timeline animation = new Timeline();
+//        animation.setCycleCount(Timeline.INDEFINITE);
+//        animation.getKeyFrames().add(frame);
+//        animation.play();
     }
 
     /**

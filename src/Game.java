@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.Stage;
 
 
 /**
@@ -26,7 +27,9 @@ class Game {
     private Hero myHero;
     private ArrayList<Bullet> myBullets;
     
-
+ //   public Game(Stage s, int size){
+//    	
+//    }
 
     /**
      * Returns name of the game.
