@@ -1,9 +1,12 @@
+import java.util.ArrayList;
+
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
@@ -14,16 +17,15 @@ import javafx.scene.shape.Shape;
  * @author Robert C. Duvall
  */
 class Game {
-    public static final String TITLE = "Example JavaFX";
+    public static final String TITLE = "Mafia Mayhem";
     public static final int KEY_INPUT_SPEED = 5;
     private static final double GROWTH_RATE = 1.1;
     private static final int BOUNCER_SPEED = 30;
 
     private Scene myScene;
-    private Rectangle myBouncer;
-    private Rectangle myTopBlock;
-    private Rectangle myBottomBlock;
-    private int myBouncerDirection;
+    private Hero myHero;
+    private ArrayList<Bullet> myBullets;
+    
 
 
     /**
@@ -37,28 +39,16 @@ class Game {
      * Create the game's scene
      */
     public Scene init (int width, int height) {
-        // create a scene graph to organize the scene
         Group root = new Group();
-        // create a place to see the shapes
         myScene = new Scene(root, width, height, Color.WHITE);
-        // make some shapes and set their properties
-        myBouncer = new Rectangle(width / 2 - 25, height / 2 - 100, 50, 50);
-        myBouncer.setFill(Color.BLUE);
+        myHero = new Hero();
+        myBullets = new ArrayList<Bullet>();
         // x and y represent the top left corner, so center it
-        myBouncer.setX(width / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-        myBouncer.setY(height / 2  - myBouncer.getBoundsInLocal().getHeight() / 2);
-        myTopBlock = new Rectangle(width / 2 - 25, height / 2 - 100, 50, 50);
-        myTopBlock.setFill(Color.RED);
-        myBottomBlock = new Rectangle(width / 2 - 25, height / 2 + 50, 50, 50);
-        myBottomBlock.setFill(Color.BISQUE);
-        myBouncerDirection = 1;
-        // order added to the group is the order in whuch they are drawn
-        root.getChildren().add(myBouncer);
-        root.getChildren().add(myTopBlock);
-        root.getChildren().add(myBottomBlock);
-        // respond to input
+        myHero.getImage().setX(0);
+        myHero.getImage().setY(height / 2  - myHero.getImage().getBoundsInLocal().getHeight() / 2);
+        root.getChildren().add(myHero.getImage());
         myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-        myScene.setOnMouseClicked(e -> handleMouseInput(e.getX(), e.getY()));
+//        myScene.setOnMouseClicked(e -> handleMouseInput(e.getX(), e.getY()));
         return myScene;
     }
 
@@ -69,30 +59,25 @@ class Game {
      * but these simple ways work too.
      */
     public void step (double elapsedTime) {
-        // update attributes
-        myBouncer.setX(myBouncer.getX() + myBouncerDirection * 10 * BOUNCER_SPEED * elapsedTime);
-        if (myBouncer.getX() >= myScene.getWidth() || myBouncer.getX() <= 0){
-        	myBouncerDirection *= -1;
-        }
-        myTopBlock.setRotate(myBottomBlock.getRotate() - 1);
-        myBottomBlock.setRotate(myBottomBlock.getRotate() + 1);
+    	for (Bullet bullet: myBullets)
+    		bullet.getShape().setCenterX(bullet.getShape().getCenterX() + 10 * BOUNCER_SPEED * elapsedTime);
         
         // check for collisions
         // with shapes, can check precisely
-        Shape intersect = Shape.intersect(myTopBlock, myBottomBlock);
-        if (intersect.getBoundsInLocal().getWidth() != -1) {
-            myTopBlock.setFill(Color.MAROON);
-        }
-        else {
-            myTopBlock.setFill(Color.RED);
-        }
+//        Shape intersect = Shape.intersect(myTopBlock, myBottomBlock);
+//        if (intersect.getBoundsInLocal().getWidth() != -1) {
+//            myTopBlock.setFill(Color.MAROON);
+//       }
+//        else {
+//            myTopBlock.setFill(Color.RED);
+//        }
         // with images can only check bounding box
-        if (myBottomBlock.getBoundsInParent().intersects(myBouncer.getBoundsInParent())) {
-            myBottomBlock.setFill(Color.BURLYWOOD);
-        }
-        else {
-            myBottomBlock.setFill(Color.BISQUE);
-        }
+//        if (myBottomBlock.getBoundsInParent().intersects(myHero.getImage().getBoundsInParent())) {
+//            myBottomBlock.setFill(Color.BURLYWOOD);
+//        }
+//        else {
+//            myBottomBlock.setFill(Color.BISQUE);
+//        }
     }
 
 
@@ -100,27 +85,34 @@ class Game {
     private void handleKeyInput (KeyCode code) {
         switch (code) {
             case RIGHT:
-                myTopBlock.setX(myTopBlock.getX() + KEY_INPUT_SPEED);
+                myHero.getImage().setX(myHero.getImage().getX() + KEY_INPUT_SPEED);
                 break;
             case LEFT:
-                myTopBlock.setX(myTopBlock.getX() - KEY_INPUT_SPEED);
+                myHero.getImage().setX(myHero.getImage().getX() - KEY_INPUT_SPEED);
                 break;
             case UP:
-                myTopBlock.setY(myTopBlock.getY() - KEY_INPUT_SPEED);
+                myHero.getImage().setY(myHero.getImage().getY() - 10*KEY_INPUT_SPEED);
                 break;
             case DOWN:
-                myTopBlock.setY(myTopBlock.getY() + KEY_INPUT_SPEED);
+                myHero.getImage().setY(myHero.getImage().getY() + 10*KEY_INPUT_SPEED);
                 break;
+            case SPACE:
+            	Bullet bullet = new Bullet();
+            	bullet.getShape().setCenterX(myHero.getImage().getX() + 100);
+            	bullet.getShape().setCenterY(myHero.getImage().getY() + 25);
+            	((Group) myScene.getRoot()).getChildren().add(bullet.getShape());
+            	myBullets.add(bullet);
+            	break;
             default:
                 // do nothing
         }
     }
 
     // What to do each time a key is pressed
-    private void handleMouseInput (double x, double y) {
-        if (myBottomBlock.contains(x, y)) {
-            myBottomBlock.setScaleX(myBottomBlock.getScaleX() * GROWTH_RATE);
-            myBottomBlock.setScaleY(myBottomBlock.getScaleY() * GROWTH_RATE);
-        }
-    }
+//    private void handleMouseInput (double x, double y) {
+//        if (myBottomBlock.contains(x, y)) {
+//            myBottomBlock.setScaleX(myBottomBlock.getScaleX() * GROWTH_RATE);
+//            myBottomBlock.setScaleY(myBottomBlock.getScaleY() * GROWTH_RATE);
+//        }
+//    }
 }

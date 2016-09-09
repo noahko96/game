@@ -29,7 +29,7 @@ public class Main extends Application {
         // create your own game here
         myGame = new Game();
         s.setTitle(myGame.getTitle());
-
+        //add main menu here
         // attach game to the stage and display it
         Scene scene = myGame.init(SIZE, SIZE);
         s.setScene(scene);
