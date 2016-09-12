@@ -2,22 +2,22 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * class for the information on the vest powerup
+ * class that keeps track of the information on the fire hydrants
  * 
  * @author Noah Over
  *
  */
-public class VestPowerUp {
-	private static final String APPEARANCE = "Mafia Mayhem bullet proof vest.png";
-	private static final int WIDTH = 100;
+public class FireHydrant {
+	public static final String APPEARANCE = "Mafia Mayhem fire hydrant.png";
+	public static final int WIDTH = 100;
 	
 	private ImageView myAppearance;
 	private boolean isActive;
 	
 	/**
-	 * constructor for VestPowerUp which initializes the image and activity
+	 * constructor for FireHydrant that initializes the image and activity
 	 */
-	public VestPowerUp(){
+	public FireHydrant(){
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(APPEARANCE));
 		myAppearance = new ImageView(image);
 		myAppearance.setFitWidth(WIDTH);
@@ -26,27 +26,28 @@ public class VestPowerUp {
 	}
 	
 	/**
-	 * getter for the image of the bulletproof vest
+	 * getter for the image of the fire hydrant
 	 * 
-	 * @return the image of the bulletproof vest
+	 * @return the image of the fire hydrant
 	 */
 	public ImageView getImage(){
 		return myAppearance;
 	}
 	
 	/**
-	 * getter for the activity of the bulletproof vest
+	 * getter for the activity of the fire hydrant
 	 * 
-	 * @return the isActive boolean
+	 * @return the activity of the fire hydrant
 	 */
 	public boolean getIsActive(){
 		return isActive;
 	}
 	
 	/**
-	 * makes the bulletproof vest inactive
+	 * makes the fire hydrant inactive
 	 */
 	public void notActive(){
 		isActive = false;
 	}
+
 }

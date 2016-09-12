@@ -2,22 +2,22 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * class for the information on the vest powerup
+ * class that keeps track of the statistics for the dogs
  * 
  * @author Noah Over
  *
  */
-public class VestPowerUp {
-	private static final String APPEARANCE = "Mafia Mayhem bullet proof vest.png";
+public class Dog {
+	private static final String APPEARANCE = "Mafia Mayhem dog.png";
 	private static final int WIDTH = 100;
 	
 	private ImageView myAppearance;
 	private boolean isActive;
 	
 	/**
-	 * constructor for VestPowerUp which initializes the image and activity
+	 * constructor for dog that initializes the appearance and activity
 	 */
-	public VestPowerUp(){
+	public Dog(){
 		Image image = new Image(getClass().getClassLoader().getResourceAsStream(APPEARANCE));
 		myAppearance = new ImageView(image);
 		myAppearance.setFitWidth(WIDTH);
@@ -26,27 +26,28 @@ public class VestPowerUp {
 	}
 	
 	/**
-	 * getter for the image of the bulletproof vest
+	 * getter for the image of the dog
 	 * 
-	 * @return the image of the bulletproof vest
+	 * @return the image of the dog
 	 */
 	public ImageView getImage(){
 		return myAppearance;
 	}
 	
 	/**
-	 * getter for the activity of the bulletproof vest
+	 * get for the activity of the dog
 	 * 
-	 * @return the isActive boolean
+	 * @return the activity of the dog
 	 */
 	public boolean getIsActive(){
 		return isActive;
 	}
 	
 	/**
-	 * makes the bulletproof vest inactive
+	 * makes the dog inactive
 	 */
 	public void notActive(){
 		isActive = false;
 	}
+
 }

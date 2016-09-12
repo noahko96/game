@@ -10,17 +10,22 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+/**
+ * class that creates the Main Menu
+ * 
+ * @author Noah Over
+ *
+ */
 public class MainMenu {
-	public static final Paint BACKGROUND_COLOR = Color.BLACK;
-	public static final String BUTTON_TEXT = "START GAME";
-	public static final int WIDTH_OFFSET = 45;
-	public static final int HEIGHT_OFFSET = 20;
-	public static final String TITLE = "Mafia Mayhem";
-	public static final int TITLE_X_VALUE = 90;
-	public static final String FONT = "Chiller";
-	public static final int FONT_SIZE = 50;
-	public static final Paint FONT_COLOR = Color.RED;
+	private static final Paint BACKGROUND_COLOR = Color.BLACK;
+	private static final String BUTTON_TEXT = "START GAME";
+	private static final int WIDTH_OFFSET = 45;
+	private static final int HEIGHT_OFFSET = 20;
+	private static final String TITLE = "Mafia Mayhem";
+	private static final int TITLE_X_VALUE = 90;
+	private static final String FONT = "Chiller";
+	private static final int FONT_SIZE = 50;
+	private static final Paint FONT_COLOR = Color.RED;
 	
 	private Scene myScene;
 	private Button myStartButton;
@@ -29,17 +34,32 @@ public class MainMenu {
 	private int mySize;
 	private Stage myStage;
 	
+	/**
+	 * constructor for MainMenu that initializes the stage and the size, calls init to make the scene, calls getTitle'
+	 * to get the title, shows the scene and title, and connects the button to its handler
+	 * 
+	 * @param s the stage
+	 * @param size the size
+	 */
 	public MainMenu(Stage s, int size){
 		mySize = size;
 		myStage = s;
 		init();
+		myStage.setTitle(getTitle());
 		myStage.setScene(myScene);
 		myStage.show();
 		establishHandler();
 		myStartButton.setOnAction(myHandler);
 	}
 	
-	public void establishHandler(){
+    /**
+     * Returns name of the game.
+     */
+	private String getTitle () {
+        return TITLE;
+    }
+	
+	private void establishHandler(){
 		myHandler = new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
 				new SplashScreen1(myStage, mySize);
@@ -48,12 +68,11 @@ public class MainMenu {
 	}
 	
 	
-	public void init () {
+	private void init () {
         Group root = new Group();
         myScene = new Scene(root, mySize, mySize, BACKGROUND_COLOR);
         myStartButton = new Button(BUTTON_TEXT);
-        myStartButton.setLayoutX(mySize/2 - WIDTH_OFFSET);
-        myStartButton.setLayoutY(mySize/2 + HEIGHT_OFFSET);
+        myStartButton.relocate(mySize/2 - WIDTH_OFFSET, mySize/2 + HEIGHT_OFFSET);
         myHeader = new Text(TITLE_X_VALUE, mySize/2 - 2*HEIGHT_OFFSET, TITLE);
         myHeader.setFill(FONT_COLOR);
         myHeader.setFont(new Font(FONT, FONT_SIZE));
