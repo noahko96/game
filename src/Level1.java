@@ -13,7 +13,9 @@ import javafx.util.Duration;
 
 
 /**
- * class that runs the first level of the game
+ * Class that runs the first level of the game.
+ * It is called by SplashScreen2.
+ * It can be used by calling the constructor (e.g., Level1(s, 400)).
  * 
  * @author Noah Over
  */
@@ -48,24 +50,21 @@ class Level1 {
     private ArrayList<Bullet> myEnemyBullets;
     private ArrayList<FinishLine> myFinish;
     private ArrayList<Thug> myThugs;
-    private ArrayList<Enforcer> myEnforcers;
-    private ArrayList<TrashCanObstacle> myTrash;
-    private ArrayList<Dog> myDogs;
-    private ArrayList<FireHydrant> myHydrants;
+    private ArrayList<Enemy> myEnemies;
     private ArrayList<GunPowerUp> myGuns;
     private ArrayList<VestPowerUp> myVests;
     private ArrayList<ImageView> myImages;
-    private ArrayList<ImageView> myObstacles;
+    private ArrayList<Obstacle> myObstacles;
     private int myGunTracker;
     private int myVestTracker;
     private int myTimer;
     
     /**
-     * constructor for Level1 which initializes the stage, the size, the powerup tracker, and the timer; calls init
+     * Constructor for Level1 which initializes the stage, the size, the powerup tracker, and the timer; calls init
      * to make the scene, shows the scene, and runs the game loop
      * 
-     * @param s the stage
-     * @param halfSize half the size
+     * @param s - the stage to show the animation on
+     * @param halfSize - half the length and width of the scene
      */
     public Level1(Stage s, int halfSize){
     	myStage = s;
@@ -86,7 +85,8 @@ class Level1 {
 
 
     /**
-     * Create the game's scene
+     * Create the game's scene and places the Hero in it as well as calling placeFinishLine, placeEnemies, and 
+     * placeObstacles
      */
     private void init () {
         myRoot = new Group();
@@ -95,15 +95,9 @@ class Level1 {
         myBullets = new ArrayList<Bullet>();
         myEnemyBullets = new ArrayList<Bullet>();
         myImages = new ArrayList<ImageView>();
-        myObstacles = new ArrayList<ImageView>();
         placeFinishLine();
-        placeThugs();
-        placeEnforcers();
-        placeDogs();
-        placeTrash();
-        placeHydrants();
-        placeGuns();
-        placeVests();
+        placeEnemies();
+        placeObstacles();
         myHero.getImage().setX(0);
         myHero.getImage().setY(mySize / 2  - myHero.getImage().getBoundsInLocal().getHeight() / 2);
         myRoot.getChildren().add(myHero.getImage());
@@ -111,10 +105,9 @@ class Level1 {
     }
 
     /**
-     * Change properties of shapes to animate them
-     * 
-     * Note, there are more sophisticated ways to animate shapes,
-     * but these simple ways work too.
+     * Increments myTimer, moves the images and bullets, checks everything for intersections and handles what to 
+     * do if there is one, checks deaths of hero and enemies, and keeps track of the power ups through the use of a
+     * bunch of other methods that it calls
      */
     private void step (double elapsedTime) {
     	myTimer++;
@@ -122,18 +115,19 @@ class Level1 {
     	moveBulletsAndCheckIntersections(elapsedTime);
     	moveEnemyBulletsAndCheckIntersections(elapsedTime);
     	checkFinishLineIntersections();
-    	checkDogIntersections();
-    	checkTrashIntersections();
-    	checkFireHydrantIntersections();
+    	checkObstacleIntersections();
     	checkGunIntersections();
     	checkVestIntersections();
-    	checkThugIntersectionsDeathAndFireWeapon();
-    	checkEnforcerDeath();
+    	thugsFireWeapons();
+    	checkEnemyDeath();
     	setHeroRestrictions();
     	checkPowerUpTrackers();
     }
 
-
+    /**
+     * Checks to see if the power up trackers have reached their reset values and if they have it takes away the
+     * respective power up
+     */
 	private void checkPowerUpTrackers() {
 		if (myVestTracker == RESET_VEST_POWER &&
     		myHero.checkInvincibility()){
@@ -145,7 +139,10 @@ class Level1 {
     	}
 	}
 
-
+	/**
+	 * Checks to see if the hero has ran out of lives or went out of bounds and if he has it stops the animation 
+	 * and calls the GameOverScreen
+	 */
 	private void setHeroRestrictions() {
 		if (myHero.getLives() <= 0 ||
     		myHero.getImage().getX() < -1 * COLUMN_WIDTH ||
@@ -157,46 +154,41 @@ class Level1 {
     	}
 	}
 
-
-	private void checkEnforcerDeath() {
-		for (Enforcer enforcer: myEnforcers){
-    		if (enforcer.getHealth() <= 0){
-    			dieEnforcer(enforcer);
+	/**
+	 * Checks to see if an enemy ran out of lives or is intersecting with the hero. In either case, you call 
+	 * dieEnemy to kill the enemy. If it is the intersection, the hero loses a life, or two if the enemy is an
+	 * enforcer, if he is not invincible, otherwise it increments the vest power up tracker.
+	 */
+	private void checkEnemyDeath() {
+		for (Enemy enemy: myEnemies){
+    		if (enemy.getHealth() <= 0){
+    			dieEnemy(enemy);
     		}
-    		else if (enforcer.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
-    				 enforcer.getIsAlive()){
+    		else if (enemy.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
+    				 enemy.getIsAlive()){
     			if (!myHero.checkInvincibility()){
     				myHero.loseLife();
-    				myHero.loseLife();
+    				if (enemy instanceof Enforcer){
+    					myHero.loseLife();
+    				}
     			}
     			else {
     				myVestTracker++;
     			}
-    			dieEnforcer(enforcer);
+    			dieEnemy(enemy);
     		}
     	}
 	}
 
-
-	private void checkThugIntersectionsDeathAndFireWeapon() {
+	/**
+	 * Has all the thugs that are on the screen fire when myTimer is evenly divisible by DIVISOR
+	 */
+	private void thugsFireWeapons() {
 		for (Thug thug: myThugs){
-    		if (thug.getHealth() <= 0){
-    			dieThug(thug);
-    		}
-    		else if (thug.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
-				thug.getIsAlive()){
-				if (!myHero.checkInvincibility()){
-					myHero.loseLife();
-				}
-				else {
-					myVestTracker++;
-				}
-				dieThug(thug);
-    		}
-    		else if (thug.getImage().getX() <= myStage.getWidth() &&
-    				 thug.getImage().getX() >= 0 &&
-    				 thug.getIsAlive() && 
-    				 myTimer%DIVISOR == 0){
+    		if (thug.getImage().getX() <= myStage.getWidth() &&
+    			thug.getImage().getX() >= 0 &&
+    			thug.getIsAlive() && 
+    			myTimer%DIVISOR == 0){
     			Bullet bullet = new Bullet();
     			bullet.getShape().setCenterX(thug.getImage().getX());
     			bullet.getShape().setCenterY(thug.getImage().getY() + BULLET_PLACEMENT);
@@ -206,7 +198,10 @@ class Level1 {
     	}
 	}
 
-
+	/**
+	 * Checks to see if any of the vests intersect with the hero and if they do it gives the hero invincibility
+	 * until he gets hit by either a bullet, enemy, or obstacle and removes the vest from the screen.
+	 */
 	private void checkVestIntersections() {
 		for (VestPowerUp vest: myVests){
     		if (vest.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
@@ -219,7 +214,10 @@ class Level1 {
     	}
 	}
 
-
+	/**
+	 * Checks to see if any of the gun power ups intersect with the hero and if they do, doubles the damage the 
+	 * hero does with each of his shots until he shoots five times and removes the gun from the screen
+	 */
 	private void checkGunIntersections() {
 		for (GunPowerUp gun: myGuns){
     		if (gun.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
@@ -232,58 +230,33 @@ class Level1 {
     	}
 	}
 
-
-	private void checkFireHydrantIntersections() {
-		for (FireHydrant hydrant: myHydrants){
-    		if (hydrant.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
-    			hydrant.getIsActive()){
+	/**
+	 * Checks to see if any of the obstacles intersect with the hero, other than the power ups or the finish line. 
+	 * If any of them do, the hero will lose a life if he is not invincible or the vest power up tracker will be 
+	 * incremented and no matter the invincibility the obstacle will be removed from the screen.
+	 */
+	private void checkObstacleIntersections() {
+		for (Obstacle obstacle: myObstacles){
+    		if (obstacle.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
+    			obstacle.getIsActive() &&
+    			!(obstacle instanceof GunPowerUp) &&
+    			!(obstacle instanceof VestPowerUp)){
     			if (!myHero.checkInvincibility()){
     				myHero.loseLife();
     			}
     			else {
     				myVestTracker++;
     			}
-    			hydrant.notActive();
-    			myRoot.getChildren().remove(hydrant.getImage());
+    			obstacle.notActive();
+    			myRoot.getChildren().remove(obstacle.getImage());
     		}
     	}
 	}
 
-
-	private void checkTrashIntersections() {
-		for (TrashCanObstacle can: myTrash){
-    		if (can.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
-    			can.getIsActive()){
-    			if (!myHero.checkInvincibility()){
-    				myHero.loseLife();
-   			}
-    			else {
-    				myVestTracker++;
-    			}
-    			can.notActive();
-   			myRoot.getChildren().remove(can.getImage());
-    		}
-    	}
-	}
-
-
-	private void checkDogIntersections() {
-		for (Dog dog: myDogs){
-    		if (dog.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent()) &&
-    			dog.getIsActive()){
-    			if (!myHero.checkInvincibility()){
-    				myHero.loseLife();
-    			}
-    			else {
-    				myVestTracker++;
-    			}
-    			dog.notActive();
-    			myRoot.getChildren().remove(dog.getImage());
-    		}
-    	}
-	}
-
-
+	/**
+	 * Checks to see if the finish line intersects with the hero and if it does it calls the LevelCompletedScreen
+	 * and stops the animation.
+	 */
 	private void checkFinishLineIntersections() {
 		for (FinishLine flag: myFinish){
     		if (flag.getImage().getBoundsInParent().intersects(myHero.getImage().getBoundsInParent())){
@@ -293,7 +266,14 @@ class Level1 {
     	}
 	}
 
-
+	/**
+	 * Moves all of the enemy bullets towards the left side of the screen and checks to see if they intersect with
+	 * the hero or one of the obstacles. If it intersects with the hero, the hero will lose a life barring 
+	 * invincibility or the vest power up tracker will be incremented and it will call stopBullet to stop the 
+	 * bullet. If it intersects with an obstacle, the bullet will be stopped by just calling stopBullet.
+	 * 
+	 * @param elapsedTime
+	 */
 	private void moveEnemyBulletsAndCheckIntersections(double elapsedTime) {
 		for (Bullet bullet: myEnemyBullets){
     		bullet.getShape().setCenterX(bullet.getShape().getCenterX() - BULLET_SPEED*elapsedTime);
@@ -307,8 +287,8 @@ class Level1 {
     				myVestTracker++;
     			}
     		}
-    		for (ImageView obstacle: myObstacles){
-    			if (bullet.getShape().getBoundsInParent().intersects(obstacle.getBoundsInParent()) &&
+    		for (Obstacle obstacle: myObstacles){
+    			if (bullet.getShape().getBoundsInParent().intersects(obstacle.getImage().getBoundsInParent()) &&
     				bullet.getIsActive()){
     				stopBullet(bullet);
     			}
@@ -316,28 +296,28 @@ class Level1 {
     	}
 	}
 
-
+	/**
+	 * Moves all of the hero's bullets towards the right side of the screen and checks if it intersects with an
+	 * enemy, an obstacle, or goes out of bounds. If it intersects with an enemy, the enemy loses the amount of 
+	 * health that equals the amount of damage that the bullet can do and the bullet is stopped with the method
+	 * stopBullet. If it intersects with an obstacle or goes out of bounds, the bullet is stopped using 
+	 * stopBullet.
+	 * 
+	 * @param elapsedTime
+	 */
 	private void moveBulletsAndCheckIntersections(double elapsedTime) {
 		for (Bullet bullet: myBullets){
     		bullet.getShape().setCenterX(bullet.getShape().getCenterX() + BULLET_SPEED * elapsedTime);
-    		for (Thug thug: myThugs){
-    			if (bullet.getShape().getBoundsInParent().intersects(thug.getImage().getBoundsInParent()) &&
+    		for (Enemy enemy: myEnemies){
+    			if (bullet.getShape().getBoundsInParent().intersects(enemy.getImage().getBoundsInParent()) &&
     				bullet.getIsActive() &&
-    				thug.getIsAlive()){
-    				thug.loseHealth(bullet.getDamage());
+    				enemy.getIsAlive()){
+    				enemy.loseHealth(bullet.getDamage());
     				stopBullet(bullet);
     			}
     		}
-    		for (Enforcer enforcer: myEnforcers){
-    			if (bullet.getShape().getBoundsInParent().intersects(enforcer.getImage().getBoundsInParent()) &&
-    				bullet.getIsActive() &&
-    				enforcer.getIsAlive()){
-    				enforcer.loseHealth(bullet.getDamage());
-   				stopBullet(bullet);
-    			}
-    		}
-    		for (ImageView obstacle: myObstacles){
-    			if (bullet.getShape().getBoundsInParent().intersects(obstacle.getBoundsInParent()) &&
+    		for (Obstacle obstacle: myObstacles){
+    			if (bullet.getShape().getBoundsInParent().intersects(obstacle.getImage().getBoundsInParent()) &&
     				bullet.getIsActive()){
     				stopBullet(bullet);
     			}
@@ -348,28 +328,40 @@ class Level1 {
     	}
 	}
 
-
+	/**
+	 * Moves all of the images except for that of the hero towards the left side of the screen
+	 * 
+	 * @param elapsedTime
+	 */
 	private void moveImages(double elapsedTime) {
 		for (ImageView image: myImages){
     		image.setX(image.getX() - OBJECT_SPEED*elapsedTime);
     	}
 	}
     
+	/**
+	 * Stops the bullet by making it inactive and removing it from the screen
+	 * 
+	 * @param bullet - the bullet to be stopped
+	 */
     private void stopBullet(Bullet bullet){
     	bullet.becomeInactive();
     	myRoot.getChildren().remove(bullet.getShape());
     }
     
-    private void dieThug(Thug thug){
-    	thug.die();
-    	myRoot.getChildren().remove(thug.getImage());
+    /**
+     * Kills and enemy by calling their die method and removing them from the screen.
+     * 
+     * @param enemy - the enemy to be killed
+     */
+    private void dieEnemy(Enemy enemy){
+    	enemy.die();
+    	myRoot.getChildren().remove(enemy.getImage());
     }
     
-    private void dieEnforcer(Enforcer enforcer){
-    	enforcer.die();
-    	myRoot.getChildren().remove(enforcer.getImage());
-    }
-    
+    /**
+     * Places the finish line all the way across the forty-fifth column and initializes myFinish.
+     */
     private void placeFinishLine(){
     	myFinish = new ArrayList<FinishLine>();
     	int row = 0;
@@ -384,129 +376,126 @@ class Level1 {
     	}
     }
     
-    private void placeThugs(){
+    /**
+     * Initializes myEnemies and myThugs and places all of the thugs and enforcers by calling placeAnEnemy a bunch 
+     * of times.
+     */
+    private void placeEnemies(){
+    	myEnemies = new ArrayList<Enemy>();
     	myThugs = new ArrayList<Thug>();
-    	placeAThug(1, 7);
-    	placeAThug(1, 13);
-    	placeAThug(2, 13);
-    	placeAThug(3, 17);
-    	placeAThug(0, 20);
-    	placeAThug(1, 21);
-    	placeAThug(3, 24);
-    	placeAThug(2, 28);
-    	placeAThug(1, 32);
-    	placeAThug(2, 39);
+    	placeAnEnemy(1, 7, "thug");
+    	placeAnEnemy(1, 13, "thug");
+    	placeAnEnemy(2, 13, "thug");
+    	placeAnEnemy(3, 17, "thug");
+    	placeAnEnemy(0, 20, "thug");
+    	placeAnEnemy(1, 21, "thug");
+    	placeAnEnemy(3, 24, "thug");
+    	placeAnEnemy(2, 28, "thug");
+    	placeAnEnemy(1, 32, "thug");
+    	placeAnEnemy(2, 39, "thug");
+    	placeAnEnemy(3, 7, "enforcer");
+    	placeAnEnemy(0, 10, "enforcer");
+    	placeAnEnemy(2, 20, "enforcer");
+    	placeAnEnemy(0, 28, "enforcer");
+    	placeAnEnemy(2, 32, "enforcer");
+    	placeAnEnemy(1, 36, "enforcer");
+    	placeAnEnemy(2, 36, "enforcer");
+    	placeAnEnemy(3, 36, "enforcer");
+    	placeAnEnemy(0, 42, "enforcer");
+    	placeAnEnemy(2, 44, "enforcer");
+    	placeAnEnemy(3, 44, "enforcer");
     }
     
-    private void placeAThug(int row, int column){
-    	Thug thug = new Thug();
-    	thug.getImage().setX(column*COLUMN_WIDTH);
-    	thug.getImage().setY(row*ROW_HEIGHT);
-    	myThugs.add(thug);
-    	myImages.add(thug.getImage());
-    	myRoot.getChildren().add(thug.getImage());
+    /**
+     * Places an enemy in one of the four rows and forty-five columns of the game and determines the type of enemy
+     * by using type and it adds the enemy to myEnemies, the image of the enemy to myImages and the children of 
+     * myRoot, and the enemy to myThugs if it is a thug.
+     * 
+     * @param row - the number 0-3 which represents which row the enemy should be placed in
+     * @param column - the number 7-45 which represents which column the enemy should be placed in
+     * @param type - the String which represents what type of enemy is being placed
+     */
+    private void placeAnEnemy(int row, int column, String type){
+    	Enemy enemy;
+    	if (type.equals("thug")){
+    		enemy = new Thug();
+    		myThugs.add((Thug) enemy);
+    	}
+    	else {
+    		enemy = new Enforcer();
+    	}
+    	enemy.getImage().setX(column*COLUMN_WIDTH);
+    	enemy.getImage().setY(row*ROW_HEIGHT);
+    	myEnemies.add(enemy);
+    	myImages.add(enemy.getImage());
+    	myRoot.getChildren().add(enemy.getImage());
     }
     
-    private void placeEnforcers(){
-    	myEnforcers = new ArrayList<Enforcer>();
-    	placeAnEnforcer(3, 7);
-    	placeAnEnforcer(0, 10);
-    	placeAnEnforcer(2, 20);
-    	placeAnEnforcer(0, 28);
-    	placeAnEnforcer(2, 32);
-    	placeAnEnforcer(1, 36);
-    	placeAnEnforcer(2, 36);
-    	placeAnEnforcer(3, 36);
-    	placeAnEnforcer(0, 42);
-    	placeAnEnforcer(2, 44);
-    	placeAnEnforcer(3, 44);
-    }
-    
-    private void placeAnEnforcer(int row, int column){
-    	Enforcer enforcer = new Enforcer();
-    	enforcer.getImage().setX(column*COLUMN_WIDTH);
-    	enforcer.getImage().setY(row*ROW_HEIGHT);
-    	myEnforcers.add(enforcer);
-    	myImages.add(enforcer.getImage());
-    	myRoot.getChildren().add(enforcer.getImage());
-    }
-    
-    private void placeDogs(){
-    	myDogs = new ArrayList<Dog>();
-    	placeADog(1, 24);
-    	placeADog(3, 28);
-    }
-    
-    private void placeADog(int row, int column){
-    	Dog dog = new Dog();
-    	dog.getImage().setX(column*COLUMN_WIDTH);
-    	dog.getImage().setY(row*ROW_HEIGHT);
-    	myDogs.add(dog);
-    	myObstacles.add(dog.getImage());
-    	myImages.add(dog.getImage());
-    	myRoot.getChildren().add(dog.getImage());
-    }
-    
-    private void placeTrash(){
-    	myTrash = new ArrayList<TrashCanObstacle>();
-    	placeACan(2, 24);
-    	placeACan(1, 42);
-    }
-    
-    private void placeACan(int row, int column){
-    	TrashCanObstacle can = new TrashCanObstacle();
-    	can.getImage().setX(column*COLUMN_WIDTH);
-    	can.getImage().setY(row*ROW_HEIGHT);
-    	myTrash.add(can);
-    	myObstacles.add(can.getImage());
-    	myImages.add(can.getImage());
-    	myRoot.getChildren().add(can.getImage());
-    }
-    
-    private void placeHydrants(){
-    	myHydrants = new ArrayList<FireHydrant>();
-    	placeAHydrant(1, 17);
-    	placeAHydrant(0, 24);
-    }
-    
-    private void placeAHydrant(int row, int column){
-    	FireHydrant hydrant = new FireHydrant();
-    	hydrant.getImage().setX(column*COLUMN_WIDTH);
-    	hydrant.getImage().setY(row*ROW_HEIGHT);
-    	myHydrants.add(hydrant);
-    	myObstacles.add(hydrant.getImage());
-    	myImages.add(hydrant.getImage());
-    	myRoot.getChildren().add(hydrant.getImage());
-    }
-    
-    private void placeGuns(){
+    /**
+     * Initializes myObstacles, myGuns, and myVests and places all of the obstacles except for the finish line
+     * using a bunch of calls to the method placeAnObstacle.
+     */
+    private void placeObstacles(){
+    	myObstacles = new ArrayList<Obstacle>();
     	myGuns = new ArrayList<GunPowerUp>();
-    	placeAGun(1, 18);
-    }
-    
-    private void placeAGun(int row, int column){
-    	GunPowerUp gun = new GunPowerUp();
-    	gun.getImage().setX(column*COLUMN_WIDTH);
-    	gun.getImage().setY(row*ROW_HEIGHT);
-    	myGuns.add(gun);
-    	myImages.add(gun.getImage());
-    	myRoot.getChildren().add(gun.getImage());
-    }
-    
-    private void placeVests(){
     	myVests = new ArrayList<VestPowerUp>();
-    	placeAVest(1, 14);
+    	placeAnObstacle(1, 24, "dog");
+    	placeAnObstacle(3, 28, "dog");
+    	placeAnObstacle(2, 24, "can");
+    	placeAnObstacle(1, 42, "can");
+    	placeAnObstacle(1, 17, "hydrant");
+    	placeAnObstacle(0, 24, "hydrant");
+    	placeAnObstacle(1, 18, "gun");
+    	placeAnObstacle(1, 14, "vest");
     }
     
-    private void placeAVest(int row, int column){
-    	VestPowerUp vest = new VestPowerUp();
-    	vest.getImage().setX(column*COLUMN_WIDTH);
-    	vest.getImage().setY(row*ROW_HEIGHT);
-    	myVests.add(vest);
-    	myImages.add(vest.getImage());
-    	myRoot.getChildren().add(vest.getImage());
+    /**
+     * Places the obstacle into one of the four rows and forty-five columns of the game and determines its type from
+     * type and adds the obstacle to myObstacles, the image of the obstacle to myImages and the children of myRoot, 
+     * the obstacle to myGuns if it is a gun, and the obstacle to myVests if it is a vest.
+     * 
+     * @param row - the number 0-3 that determines the row the obstacle will be placed in
+     * @param column - the number 7-45 that determines the column the obstacle will be place in
+     * @param type - the String that represents what type of obstacle is being placed
+     */
+    private void placeAnObstacle(int row, int column, String type){
+    	Obstacle obstacle;
+    	if (type.equals("dog")){
+    		obstacle = new DogObstacle();
+    	}
+    	else if (type.equals("can")){
+    		obstacle = new TrashCanObstacle();
+    	}
+    	else if (type.equals("hydrant")){
+    		obstacle = new FireHydrantObstacle();
+    	}
+    	else if (type.equals("gun")){
+    		obstacle = new GunPowerUp();
+    		myGuns.add((GunPowerUp) obstacle);
+    	}
+    	else {
+    		obstacle = new VestPowerUp();
+    		myVests.add((VestPowerUp) obstacle);
+    	}
+    	obstacle.getImage().setX(column*COLUMN_WIDTH);
+    	obstacle.getImage().setY(row*ROW_HEIGHT);
+    	myObstacles.add(obstacle);
+    	myImages.add(obstacle.getImage());
+    	myRoot.getChildren().add(obstacle.getImage());
     }
-
+    
+    /**
+     * Handles the input from the keyboard during the game. If the right arrow is clicked, it moves the hero right.
+     * If the left arrow is clicked, it moves the hero to the left. If the up arrow is clicked, it moves the hero 
+     * up. If the down arrow is clicked, it moves the hero down. If the space bar is clicked, it shoots the hero's
+     * gun. If the A button is clicked, it gives the hero invincibility. If the B button is clicked, it removes the
+     * hero's invincibility. If the C button is clicked, it doubles the damage the hero's bullets do. If the D
+     * button is clicked, it resets the damage the hero's bullets do to 1. If the E button is clicked, it gives the
+     * hero an extra life. If the F button is clicked, it takes away a life from the hero. If the G button is 
+     * clicked, you beat the level and the LevelCompletedScreen pops up and the animation stops.
+     * 
+     * @param code
+     */
     private void handleKeyInput (KeyCode code) {
         switch (code) {
             case RIGHT:

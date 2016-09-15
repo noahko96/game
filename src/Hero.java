@@ -2,7 +2,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * class that keeps track of the information on the hero
+ * Class that keeps track of the information on the hero.
+ * It is called by Level1 and BossLevel.
+ * It can be used by calling the constructor (e.g., Hero()).
  * 
  * @author Noah Over
  *
@@ -21,7 +23,7 @@ public class Hero {
 	private int myDamagePerShot;
 	
 	/**
-	 * constructor for Hero that initializes the image, the non-invincibility, the lives, and the damage per shot
+	 * Constructor for Hero that initializes the image, the non-invincibility, the lives, and the damage per shot
 	 */
 	public Hero (){
 		myLives = INITIAL_LIVES;
@@ -34,7 +36,7 @@ public class Hero {
 	}
 	
 	/**
-	 * getter for the image of the hero
+	 * Getter for the image of the hero
 	 * 
 	 * @return the image of the hero
 	 */
@@ -43,7 +45,7 @@ public class Hero {
 	}
 	
 	/**
-	 * getter for the number of lives left with the hero
+	 * Getter for the number of lives left with the hero
 	 * 
 	 * @return the number of lives left with the hero
 	 */
@@ -52,21 +54,21 @@ public class Hero {
 	}
 	
 	/**
-	 * takes a life away
+	 * Takes a life away from the hero's total lives remaining
 	 */
 	public void loseLife(){
 		myLives--;
 	}
 	
 	/**
-	 * gives a life to the hero
+	 * Gives a life to the hero by adding it to his total lives
 	 */
 	public void gainLife(){
 		myLives++;
 	}
 	
 	/**
-	 * getter for the invincibility of the hero
+	 * Getter for the invincibility of the hero
 	 * 
 	 * @return the invincibility of the hero
 	 */
@@ -75,21 +77,21 @@ public class Hero {
 	}
 	
 	/**
-	 * gives the hero invincibility
+	 * Gives the hero invincibility by changing the isInvincible boolean to true
 	 */
 	public void gainInvincibility(){
 		isInvincible = true;
 	}
 	
 	/**
-	 * takes away the hero's invincibility
+	 * Takes away the hero's invincibility by switching the isInvincible boolean to false
 	 */
 	public void loseInvincibility(){
 		isInvincible = false;
 	}
 	
 	/**
-	 * getter for the damage the hero does with each of his bullets
+	 * Getter for the damage the hero does with each of his bullets
 	 * 
 	 * @return the damage the hero does with each of his bullets
 	 */
@@ -98,14 +100,14 @@ public class Hero {
 	}
 	
 	/**
-	 * doubles the amount of damage done by each of the hero's bullets
+	 * Doubles the amount of damage done by each of the hero's bullets
 	 */
 	public void doubleDamagePerShot(){
 		myDamagePerShot = myDamagePerShot*DOUBLER;
 	}
 	
 	/**
-	 * resets the damage the hero does with each bullet to its original value
+	 * Resets the damage the hero does with each bullet to its original value
 	 */
 	public void resetDamagePerShot(){
 		myDamagePerShot = INITIAL_DAMAGE;

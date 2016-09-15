@@ -1,74 +1,36 @@
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+//This entire file is part of my masterpiece.
+//Noah Over
+//This file is part of my masterpiece because it is a subclass of Enemy which I decided to use for my code 
+//masterpiece.
 
 /**
- * class that keeps the information on the thugs
+ * Class that keeps the information on the thugs.
+ * Depends on the superclass Enemy and is called by Level1, BossLevel, and SplashScreen2.
+ * It can be used by calling one of the constructors; Thug() or Thug("Mafia Mayhem thug.png", 4) both of which give
+ * you the same result.
  * 
  * @author Noah Over
  *
  */
-public class Thug {
+public class Thug extends Enemy {
 	private static final String APPEARANCE = "Mafia Mayhem thug.png";
 	private static final int INITIAL_HEALTH = 4;
-	private static final int WIDTH = 100;
-	
-	private ImageView myAppearance;
-	private int myHealth;
-	private boolean isAlive;
 	
 	/**
-	 * constructor for Thug that initializes the image, health, and life
+	 * Constructor for Thug that calls the constructor for the superclass Enemy using the default appearance and 
+	 * health.
 	 */
 	public Thug(){
-		Image image = new Image(getClass().getClassLoader().getResourceAsStream(APPEARANCE));
-		myAppearance = new ImageView(image);
-		myAppearance.setFitWidth(WIDTH);
-		myAppearance.setPreserveRatio(true);
-		myHealth = INITIAL_HEALTH;
-		isAlive = true;
+		super(APPEARANCE, INITIAL_HEALTH);
 	}
 	
 	/**
-	 * getter for the image of the thug
+	 * Constructor for Thug that calls the constructor for the superclass Enemy
 	 * 
-	 * @return the image of the thug
+	 * @param appearance - the String that represents the image of the thug
+	 * @param health - the initial amount of health the thug will have
 	 */
-	public ImageView getImage(){
-		return  myAppearance;
+	public Thug(String appearance, int health){
+		super(appearance, health);
 	}
-	
-	/**
-	 * getter for the health of the thug
-	 * 
-	 * @return the health of the thug
-	 */
-	public int getHealth(){
-		return myHealth;
-	}
-	
-	/**
-	 * takes away the damage dealt to you by the bullet from your health
-	 * 
-	 * @param damage the damage dealt to you by the bullet
-	 */
-	public void loseHealth(int damage){
-		myHealth -= damage;
-	}
-	
-	/**
-	 * tells whether the thug is alive or dead
-	 * 
-	 * @return the isAlive boolean
-	 */
-	public boolean getIsAlive(){
-		return isAlive;
-	}
-	
-	/**
-	 * kills the thug
-	 */
-	public void die(){
-		isAlive = false;
-	}
-
 }

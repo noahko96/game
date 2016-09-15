@@ -9,7 +9,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * class that creates the second splash screen
+ * Class that creates the second splash screen.
+ * It is called by Splash Screen 1.
+ * It can be used by calling the constructor (e.g., SplashScreen2(s, 400))
  * 
  * @author Noah Over
  *
@@ -41,11 +43,11 @@ public class SplashScreen2 {
 	private EventHandler myHandler;
 	
 	/**
-	 * constructor for SplashScreen2 which initializes the size and the stage, calls init to make the scene, shows
+	 * Constructor for SplashScreen2 which initializes the size and the stage, calls init to make the scene, shows
 	 * the scene, and connects the button to its handler
 	 * 
-	 * @param s the stage
-	 * @param size the size
+	 * @param s - the stage to show the splash screen on
+	 * @param size - the length and width of the scene
 	 */
 	public SplashScreen2(Stage s, int size){
 		mySize = size;
@@ -57,6 +59,9 @@ public class SplashScreen2 {
 		myButton.setOnAction(myHandler);
 	}
 	
+	/**
+	 * Establishes that the button will take you to level 1 when pushed.
+	 */
 	private void establishHandler(){
 		myHandler = new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
@@ -65,6 +70,10 @@ public class SplashScreen2 {
 		};
 	}
 	
+	/**
+	 * Creates the scene by picking the background color, placing the thug, trash can, and gun images, placing the
+	 * instructions for the thug, trash can, and gun, and placing the button.
+	 */
 	private void init(){
 		Group root = new Group();
 		myScene = new Scene(root, mySize, mySize, BACKGROUND_COLOR);

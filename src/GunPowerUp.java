@@ -1,54 +1,30 @@
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+
 
 /**
- * class that keeps track of the information for the gun power ups
+ * Class that keeps track of the information on the gun power ups
+ * Depends on the superclass Obstacle and is called by Level1, BossLevel, and SplashScreen2.
+ * It can be used by calling one of the constructors; GunPowerUp() or GunPowerUp("Mafia Mayhem gun.png") which both
+ * accomplish the same thing.
  * 
  * @author Noah Over
  *
  */
-public class GunPowerUp {
+public class GunPowerUp extends Obstacle {
 	private static final String APPEARANCE = "Mafia Mayhem gun.png";
-	private static final int WIDTH = 100;
-	
-	
-	private ImageView myAppearance;
-	private boolean isActive;
 	
 	/**
-	 * constructor for the GunPowerUp the initializes the image and activity
+	 * Constructor for GunPowerUp that calls the superclass Obstacle constructor with the default appearance
 	 */
 	public GunPowerUp(){
-		Image image = new Image(getClass().getClassLoader().getResourceAsStream(APPEARANCE));
-		myAppearance = new ImageView(image);
-		myAppearance.setFitWidth(WIDTH);
-		myAppearance.setPreserveRatio(true);
-		isActive = true;
+		super(APPEARANCE);
 	}
 	
 	/**
-	 * getter for the image of the gun
+	 * Constructor for GunPowerUp that calls the superclass Obstacle constructor
 	 * 
-	 * @return the image of the gun
+	 * @param appearance - the String which represents the image of the gun
 	 */
-	public ImageView getImage(){
-		return myAppearance;
+	public GunPowerUp(String appearance){
+		super(appearance);
 	}
-	
-	/**
-	 * getter for the activity of the gun
-	 * 
-	 * @return the activity of the gun
-	 */
-	public boolean getIsActive(){
-		return isActive;
-	}
-	
-	/**
-	 * makes the gun inactive
-	 */
-	public void notActive(){
-		isActive = false;
-	}
-
 }

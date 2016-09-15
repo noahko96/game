@@ -12,7 +12,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * class that creates the first splash screen
+ * Class that creates the first splash screen.
+ * It is called by MainMenu.
+ * It can be used by calling the constructor (e.g., SplashScreen1(s, 400))
  * 
  * @author Noah Over
  *
@@ -46,11 +48,11 @@ public class SplashScreen1 {
 	private EventHandler myHandler;
 	
 	/**
-	 * constructor for SplashScreen1 which initializes the size and the stage, calls init to create the scene, shows
+	 * Constructor for SplashScreen1 which initializes the size and the stage, calls init to create the scene, shows
 	 * the scene, and connects the button to its handler
 	 * 
-	 * @param s the stage
-	 * @param size the size
+	 * @param s - the stage the splash screen will be shown on
+	 * @param size - the length and width of the scene
 	 */
 	public SplashScreen1(Stage s, int size){
 		mySize = size;
@@ -62,6 +64,9 @@ public class SplashScreen1 {
 		myButton.setOnAction(myHandler);
 	}
 	
+	/**
+	 * Establishes that the button will take you to Splash Screen 2 when pushed.
+	 */
 	private void establishHandler(){
 		myHandler = new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
@@ -70,6 +75,10 @@ public class SplashScreen1 {
 		};
 	}
 	
+	/**
+	 * Creates the scene by picking the background color, placing the spacebar and arrow images, placing the 
+	 * instructions for the spacebar and arrows, and placing the button.
+	 */
 	private void init () {
         Group root = new Group();
         myScene = new Scene(root, mySize, mySize, BACKGROUND_COLOR);

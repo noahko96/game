@@ -3,7 +3,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 /**
- * class that keeps track of the statistics of the bullets
+ * Class that keeps track of the information on the bullets
+ * It is used by the Level1 and BossLevel classes.
+ * It can be used by calling the constructor Bullet().
  * 
  * @author Noah Over
  *
@@ -18,7 +20,7 @@ public class Bullet {
 	private int myDamage;
 	
 	/**
-	 * constructor for Bullet which initializes the shape, activity, and damage
+	 * Constructor for Bullet which initializes the shape, activity, and damage
 	 */
 	public Bullet(){
 		myShape = new Circle(USUAL_RADIUS, BULLET_COLOR);
@@ -27,7 +29,7 @@ public class Bullet {
 	}
 	
 	/**
-	 * getter for the shape of the bullet
+	 * Getter for the shape of the bullet
 	 * 
 	 * @return the shape of the bullet
 	 */
@@ -36,7 +38,7 @@ public class Bullet {
 	}
 	
 	/**
-	 * getter for the isActive boolean, which determine whether the bullet is still flying or not
+	 * Getter for the isActive boolean, which determine whether the bullet is still flying or not
 	 * 
 	 * @return the isActive boolean
 	 */
@@ -45,14 +47,14 @@ public class Bullet {
 	}
 	
 	/**
-	 * makes the isActive boolean false thereby ending the bullets flight
+	 * Makes the isActive boolean false thereby ending the bullets flight
 	 */
 	public void becomeInactive(){
 		isActive = false;
 	}
 	
 	/**
-	 * getter for the damage caused by the bullet
+	 * Getter for the damage caused by the bullet
 	 * 
 	 * @return the damage caused by the bullet
 	 */
@@ -61,7 +63,7 @@ public class Bullet {
 	}
 	
 	/**
-	 * setter for the damage caused by the bullet
+	 * Setter for the damage caused by the bullet
 	 * 
 	 * @param damage the damage caused by the bullet
 	 */

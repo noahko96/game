@@ -10,8 +10,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * class that creates the Level Completed screen
- * @author Noah
+ * Class that creates the Level Completed screen.
+ * It is called by Level1.
+ * It can be used by calling the constructor (e.g., LevelCompletedScreen(s, 400)).
+ * 
+ * @author Noah Over
  *
  */
 public class LevelCompletedScreen {
@@ -33,7 +36,7 @@ public class LevelCompletedScreen {
 	private EventHandler myHandler;
 	
 	/**
-	 * constructor for LevelCompletedScreen which initializes the stage and the size, calls init to create the scene,
+	 * Constructor for LevelCompletedScreen which initializes the stage and the size, calls init to create the scene,
 	 * shows the scene, and connects the button to its handler
 	 * 
 	 * @param s the stage
@@ -49,6 +52,9 @@ public class LevelCompletedScreen {
 		myButton.setOnAction(myHandler);
 	}
 	
+	/**
+	 * Establishes that the button will take you to Splash Screen 3 when pressed.
+	 */
 	private void establishHandler(){
 		myHandler = new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
@@ -57,6 +63,9 @@ public class LevelCompletedScreen {
 		};
 	}
 	
+	/**
+	 * Creates the scene by adding the background color, placing the header, and placing the button.
+	 */
 	private void init(){
 		Group root = new Group();
         myScene = new Scene(root, mySize, mySize, BACKGROUND_COLOR);

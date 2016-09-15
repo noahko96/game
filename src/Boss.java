@@ -1,56 +1,33 @@
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+//This entire file is part of my masterpiece.
+//Noah Over
+//This is part of my masterpiece because it is a subclass of the superclass Enemy that I decided to use for my code
+//masterpiece.
 
 /**
- * class that keeps track of the Boss's statistics
+ * Class that keeps track of the Boss's information
+ * Depends on the superclass Enemy and is used in SplashScreen3 and BossLevel
+ * It can be used by one of the constructors; either Boss() or Boss(Mafia Mayhem boss.png, 10) will do the same thing
  * 
  * @author Noah Over
  *
  */
-public class Boss {
+public class Boss extends Enemy{
 	private static final String APPEARANCE = "Mafia Mayhem boss.png";
 	private static final int NORMAL_HEALTH = 10;
-	private static final int WIDTH = 100;
-	
-	private ImageView myAppearance;
-	private int myHealth;
-	
 	/**
-	 * Constructor for Boss that sets the appearance and health
+	 * Constructor for Boss that calls the superclass Enemy constructor with default appearance and health for a boss
 	 */
 	public Boss(){
-		Image image = new Image(getClass().getClassLoader().getResourceAsStream(APPEARANCE));
-		myAppearance = new ImageView(image);
-		myAppearance.setFitWidth(WIDTH);
-		myAppearance.setPreserveRatio(true);
-		myHealth = NORMAL_HEALTH;
+		super(APPEARANCE, NORMAL_HEALTH);
 	}
 	
 	/**
-	 * getter for Boss's appearance
+	 * Constructor for Boss that calls the superclass Enemy constructor
 	 * 
-	 * @return Boss's appearance in form of ImageView
+	 * @param appearance - the image used for the boss
+	 * @param health - the health the boss will start with
 	 */
-	public ImageView getImage(){
-		return  myAppearance;
+	public Boss(String appearance, int health){
+		super(appearance, health);
 	}
-	
-	/**
-	 * getter for Boss's health
-	 * 
-	 * @return Boss's current health in the form of an int
-	 */
-	public int getHealth(){
-		return myHealth;
-	}
-	
-	/**
-	 * subtracts the damage done by a bullet from the Boss's health
-	 * 
-	 * @param damage the damage caused by the bullet
-	 */
-	public void loseHealth(int damage){
-		myHealth -= damage;
-	}
-
 }

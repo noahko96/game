@@ -1,73 +1,35 @@
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+//This entire file is part of my masterpiece.
+//Noah Over
+//This file is part of my masterpiece because it is a subclass of Enemy which I decided to use for my code 
+//masterpiece.
 
 /**
- * class that keeps track of the statistics of the enforcers
+ * Class that keeps track of the information on the enforcers
+ * Depends on the superclass Enemy and is used in Level1 and BossLevel.
+ * It can be used by calling one of the constructors; Enforcer() or Enforcer("Mafia Mayhem enforcer.png", 8) which 
+ * will get you the same result.
  * 
  * @author Noah Over
  *
  */
-public class Enforcer {
+public class Enforcer extends Enemy{
 	private static final String APPEARANCE = "Mafia Mayhem enforcer.png";
 	private static final int INITIAL_HEALTH = 8;
-	private static final int WIDTH = 100;
-	
-	private ImageView myAppearance;
-	private int myHealth;
-	private boolean isAlive;
 	
 	/**
-	 * constructor for Enforcer which initializes the image, health, and life
+	 * Constructor for Enforcer that calls the superclass Enemy constructor with the default appearance and health
 	 */
 	public Enforcer(){
-		Image image = new Image(getClass().getClassLoader().getResourceAsStream(APPEARANCE));
-		myAppearance = new ImageView(image);
-		myAppearance.setFitWidth(WIDTH);
-		myAppearance.setPreserveRatio(true);
-		myHealth = INITIAL_HEALTH;
-		isAlive = true;
+		super(APPEARANCE, INITIAL_HEALTH);
 	}
 	
 	/**
-	 * getter for the image of the enforcer
+	 * Constructor for Enforcer that calls the superclass Enemy constructor
 	 * 
-	 * @return the image of the enforcer
+	 * @param appearance - the String that represents the image of the enforcer
+	 * @param health - the health the enforcer starts with
 	 */
-	public ImageView getImage(){
-		return  myAppearance;
-	}
-	
-	/**
-	 * getter for the health of the enforcer
-	 * 
-	 * @return the health of the enforcer
-	 */
-	public int getHealth(){
-		return myHealth;
-	}
-	
-	/**
-	 * subtracts however much health was lost from the enforcer's health;
-	 * 
-	 * @param healthLost however much health was lost
-	 */
-	public void loseHealth(int healthLost){
-		myHealth -= healthLost;
-	}
-	
-	/**
-	 * returns the boolean that states whether the enforcer is living or dead
-	 * 
-	 * @return the isAlive boolean
-	 */
-	public boolean getIsAlive(){
-		return isAlive;
-	}
-	
-	/**
-	 * kills the enforcer
-	 */
-	public void die(){
-		isAlive = false;
+	public Enforcer(String appearance, int health){
+		super(appearance, health);
 	}
 }

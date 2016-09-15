@@ -3,8 +3,8 @@ import javafx.stage.Stage;
 
 
 /**
- * This is the main program, it is basically boilerplate to create
- * an animated scene.
+ * This is the main program, it just calls Main Menu to start the game.
+ * It can be used by hitting the run button.
  * 
  * @author Noah Over
  */
@@ -13,7 +13,7 @@ public class Main extends Application {
 
 
     /**
-     * Set things up at the beginning.
+     * Call MainMenu.
      */
     @Override
     public void start (Stage s) {

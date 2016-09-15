@@ -10,7 +10,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * class that creates the screen for when you win the game
+ * Class that creates the screen for when you win the game
+ * It is called by BossLevel.
+ * It can be used by calling the constructor (e.g., GameWonScreen(s, 400))
  * 
  * @author Noah Over
  *
@@ -34,7 +36,7 @@ public class GameWonScreen {
 	private EventHandler myHandler;
 	
 	/**
-	 * constructor for the GameWonScreen that initializes the size and the stage, calls init to make the scene, shows
+	 * Constructor for the GameWonScreen that initializes the size and the stage, calls init to make the scene, shows
 	 * the scene, and connects the button with its handler
 	 * 
 	 * @param s the stage
@@ -50,6 +52,9 @@ public class GameWonScreen {
 		myButton.setOnAction(myHandler);
 	}
 	
+	/**
+	 * Establishes that the button will take you to the main menu when pressed
+	 */
 	private void establishHandler(){
 		myHandler = new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
@@ -58,6 +63,9 @@ public class GameWonScreen {
 		};
 	}
 	
+	/**
+	 * Creates the scene by setting the background, placing the header, and placing the button
+	 */
 	private void init(){
 		Group root = new Group();
         myScene = new Scene(root, mySize, mySize, BACKGROUND_COLOR);

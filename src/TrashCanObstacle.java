@@ -1,52 +1,31 @@
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+
 
 /**
- * the class which keeps the information on the trash can obstacle
+ * The class which keeps the information on the trash can obstacle.
+ * Depends on the superclass Obstacle and is called in Level1 and SplashScreen2.
+ * It can be used by calling one of the constructors; TrashCanObstacle() or TrashCanObstacle("Mafia Mayhem 
+ * trashcan.png") which both get the same result.
  * 
  * @author Noah Over
  *
  */
-public class TrashCanObstacle {
+public class TrashCanObstacle extends Obstacle{
 	private static final String APPEARANCE = "Mafia Mayhem trashcan.png";
-	private static final int WIDTH = 100;
-	
-	private ImageView myAppearance;
-	private boolean isActive;
 	
 	/**
-	 * constructor for TrashCanObstacle which initializes the image and activity
+	 * Constructor for TrashCanObstacle which calls the superclass Obstacle constructor using the default appearance.
 	 */
 	public TrashCanObstacle(){
-		Image image = new Image(getClass().getClassLoader().getResourceAsStream(APPEARANCE));
-		myAppearance = new ImageView(image);
-		myAppearance.setFitWidth(WIDTH);
-		myAppearance.setPreserveRatio(true);
-		isActive = true;
+		super(APPEARANCE);
 	}
 	
 	/**
-	 * getter for the image of the trash can
+	 * Constructor for TrashCanObstacle which calls the superclass Obstacle constructor
 	 * 
-	 * @return the image of the trash can
+	 * @param appearance - the String that represents the image of the trash can
 	 */
-	public ImageView getImage(){
-		return myAppearance;
+	public TrashCanObstacle(String appearance) {
+		super(appearance);
 	}
 	
-	/**
-	 * getter for the activity of the trash can
-	 * 
-	 * @return the isActive boolean
-	 */
-	public boolean getIsActive(){
-		return isActive;
-	}
-	
-	/**
-	 * makes the trash can inactive
-	 */
-	public void notActive(){
-		isActive = false;
-	}
 }

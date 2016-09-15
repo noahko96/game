@@ -9,7 +9,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * class that creates the third splash screen
+ * Class that creates the third splash screen.
+ * It is called by LevelCompletedScreen.
+ * It can be used by calling the constructor (e.g., SplashScreen3(s, 400))
  * 
  * @author Noah Over
  *
@@ -33,11 +35,11 @@ public class SplashScreen3 {
 	private EventHandler myHandler;
 	
 	/**
-	 * constructor for SplashScreen3 which initializes the size and the stage, calls init to make the scene, shows 
+	 * Constructor for SplashScreen3 which initializes the size and the stage, calls init to make the scene, shows 
 	 * the scene, and connects the button with its handler.
 	 * 
-	 * @param s the stage
-	 * @param size the size
+	 * @param s - the stage to show the splash screen on
+	 * @param size - the length and width of the scene
 	 */
 	public SplashScreen3(Stage s, int size){
 		mySize = size;
@@ -49,6 +51,9 @@ public class SplashScreen3 {
 		myButton.setOnAction(myHandler);
 	}
 	
+	/**
+	 * Establishes that the button will take you to the boss level when pushed.
+	 */
 	private void establishHandler(){
 		myHandler = new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
@@ -57,6 +62,10 @@ public class SplashScreen3 {
 		};
 	}
 	
+	/**
+	 * Creates the scene by picking the background color, placing the boss image, placing the boss instructions, and
+	 * placing the button.
+	 */
 	private void init(){
 		Group root = new Group();
 		myScene = new Scene(root, mySize, mySize, BACKGROUND_COLOR);

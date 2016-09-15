@@ -10,7 +10,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * class that creates the Game Over screen
+ * Class that creates the Game Over screen
+ * It is called by Level1 and BossLevel.
+ * It can be used by calling the constructor (e.g., GameOverScreen(s, 400)).
  * 
  * @author Noah Over
  *
@@ -34,11 +36,11 @@ public class GameOverScreen {
 	private EventHandler myHandler;
 	
 	/**
-	 * constructor for the Game Over Scene which initializes the size and stage, calls init to create the scene, 
+	 * Constructor for the Game Over Scene which initializes the size and stage, calls init to create the scene, 
 	 * shows the scene on the stage, and connects the button with its handler
 	 * 
-	 * @param s the stage
-	 * @param size the size
+	 * @param s - the stage
+	 * @param size - the length and the width of the scene
 	 */
 	public GameOverScreen(Stage s, int size){
 		mySize = size;
@@ -50,6 +52,9 @@ public class GameOverScreen {
 		myButton.setOnAction(myHandler);
 	}
 	
+	/**
+	 * Establishs that myButton will take you to the main menu when pressed
+	 */
 	private void establishHandler(){
 		myHandler = new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent event){
@@ -58,6 +63,9 @@ public class GameOverScreen {
 		};
 	}
 	
+	/**
+	 * Creates the scene by making the background, placing the header, and placing the button.
+	 */
 	private void init(){
 		Group root = new Group();
         myScene = new Scene(root, mySize, mySize, BACKGROUND_COLOR);
